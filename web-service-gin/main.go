@@ -65,3 +65,6 @@ func main(){
 
 	router.Run("localhost:8080")
 }
+
+// use 'go run .' in order to start the service
+// when getting the dependency, use 'go get .' 

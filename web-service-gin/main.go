@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/swag/example/basic/docs"
 )
-
 
 // album represents data about a record album
 type album struct {
@@ -63,8 +65,31 @@ func main(){
 	router.GET("/albums/:id", getAlbumById)
 	router.POST("/albums", postAlbums)
 
-	router.Run("localhost:8080")
+	//router.Run("localhost:8080")
+
+	r := gin.Default()
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	v1 := r.Group("/api/v1")
+	{
+		eg := v1.Group("/albums")
+		{
+			eg.GET("/albums", getAlbums)
+		}
+	}
+	
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.Run(":8080")
 }
 
 // use 'go run .' in order to start the service
 // when getting the dependency, use 'go get .' 
+
+// setting up Swagger
+// Step 1: Setup Swagger CLI: go get -u github.com/swaggo/swag/cmd/swag
+// 							  go install github.com/swaggo/swag/cmd/swag@latest
+
+// Step 2: Install Gin-Swagger: go get -u github.com/swaggo/gin-swagger
+//         Import these packages into the main.go file:
+//		   import "github.com/swaggo/gin-swagger"
+//		   import "github.com/swaggo/gin-swagger/swaggerFiles"
+

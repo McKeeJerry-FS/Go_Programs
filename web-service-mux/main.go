@@ -65,18 +65,31 @@ func UpdateBook(w http.ResponseWriter, r *http.Request){
 }
 
 // Function for deleting a book
-
+func DeleteBook(w http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	for index, item := range books{
+		if item.ID == params["id"] {
+			books = append(books[:index], books[index+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(books)
+}
 
 
 
 func main() {
 	router := mux.NewRouter()
 
+	books =  append(books, Book{ID: "1", Title: "Book One", Author: "John Doe", Publisher: &Company{Name: "Publisher One", Address: "Address One"}})
+	books =  append(books, Book{ID: "2", Title: "Book Two", Author: "Jane Smith", Publisher: &Company{Name: "Publisher Two", Address: "Address Two"}})
+
+
 	router.HandleFunc("/books", GetBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", GetBook).Methods("GET")
 	router.HandleFunc("/books", CreateBook).Methods("POST")
 	router.HandleFunc("/books/{id}", UpdateBook).Methods("PUT")
-
+	router.HandleFunc("/books/{id}", DeleteBook).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

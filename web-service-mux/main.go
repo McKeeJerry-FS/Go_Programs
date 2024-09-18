@@ -23,10 +23,12 @@ type Company struct{
 
 var books []Book
 
+// Function for returning all books
 func GetBooks(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(books)
 }
 
+// Function for returning a single book with a matching ID
 func GetBook(w http.ResponseWriter, r *http.Request){
 	params := mux.Vars(r)
 	for _, item := range books {
@@ -38,11 +40,27 @@ func GetBook(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(&Book{})
 }
 
+// Function for creating a book
+func CreateBook(w http.ResponseWriter, r *http.Request){
+	var book Book
+	_ = json.NewDecoder(r.Body).Decode(&book)
+	books = append(books, book)
+	json.NewEncoder(w).Encode(book)
+}
+
+// Function for updating a book
+
+
+
+
+// Function for deleting a book
+
 func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/books", GetBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", GetBook).Methods("GET")
+	router.HandleFunc("/books", CreateBook).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

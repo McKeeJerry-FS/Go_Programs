@@ -49,11 +49,25 @@ func CreateBook(w http.ResponseWriter, r *http.Request){
 }
 
 // Function for updating a book
-
-
-
+func UpdateBook(w http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	for index, item := range books {
+		if item.ID == params["id"] {
+			books = append(books[:index], books[index+1:]...)
+			var book Book
+			_ = json.NewDecoder(r.Body).Decode(&book)
+			books = append(books, book)
+			json.NewEncoder(w).Encode(book)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode(books)
+}
 
 // Function for deleting a book
+
+
+
 
 func main() {
 	router := mux.NewRouter()
@@ -61,6 +75,8 @@ func main() {
 	router.HandleFunc("/books", GetBooks).Methods("GET")
 	router.HandleFunc("/books/{id}", GetBook).Methods("GET")
 	router.HandleFunc("/books", CreateBook).Methods("POST")
+	router.HandleFunc("/books/{id}", UpdateBook).Methods("PUT")
+
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

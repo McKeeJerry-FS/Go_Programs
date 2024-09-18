@@ -3,6 +3,7 @@ package main
 import(
 	"encoding/json"
 	//"fmt"
+	//"errors"
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
@@ -23,9 +24,21 @@ type Company struct{
 
 var books []Book
 
+// type IdNotFoundError struct{
+// 	ID string
+// }
+
+// func (e IdNotFoundError) Error() string {
+// 	return fmt.Sprintf("Book with ID %d not found", e.ID)
+// }
+
 // Function for returning all books
 func GetBooks(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(books)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 }
 
 // Function for returning a single book with a matching ID
@@ -38,6 +51,15 @@ func GetBook(w http.ResponseWriter, r *http.Request){
 		}
 	}
 	json.NewEncoder(w).Encode(&Book{})
+	
+	// if err != nil {
+	// 	if _, ok := err.(IdNotFoundError); ok {
+	// 		http.Error(w, err.Error(), http.StatusNotFound)
+	// 		return
+	// 	}
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 }
 
 // Function for creating a book
